@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Live Status</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+      }
+
+      #map {
+        height: 50%;
+        width: 50%;
+        text-align: center;
+      }
+
+      #legend {
+        font-family: Arial, sans-serif;
+        background: #fff;
+        padding: 10px;
+        height: 150px;
+        font-size: 15px;
+        font-style: bold;
+        width: 150px;
+        margin: 10px;
+        border: 3px solid #000;
+      }
+
+      #legend h3 {
+        margin-top: 0;
+      }
+
+      #legend img {
+        vertical-align: middle;
+      }
+    </style>
+  </head>
+
+  <body>
+      <div id="map"></div>
+      <div id="legend">
+        <h3>Information:</h3>
+      </div>
+    <script>
+      var map;
+      function initMap() {
+        var techno = { lat: {{userLAT}}, lng: {{userLNG}} };
+        var marchent = { lat: {{marchentLat}}, lng: {{marchentLng}} };
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 13,
+          center: techno
+        });
+        var marker = new google.maps.Marker({
+          position: marchent,
+          map: map,
+          title: 'Rabindra Bhawan'
+        });
+
+        var marker = new google.maps.Marker({
+          position: techno,
+          map: map,
+          title: 'Techno India Hooghly'
+        });
+
+
+        var flightPlanCoordinates = [{lat: {{userLAT}}, lng: {{userLNG}}},
+            { lat:  {{marchentLat}}, lng: {{marchentLng}} }];
+
+        var flightPath = new google.maps.Polyline({
+            path: flightPlanCoordinates,
+            geodesic: true,
+            strokeColor: '#FF0000',
+            strokeOpacity: 1.0,
+            strokeWeight: 2
+        });
+        flightPath.setMap(map);
+
+
+        
+
+        var icons = {
+          library: {
+            name: 'Destination: Techno India Hooghly',
+          },
+          info: {
+            name: 'Pickup: Rabindra Bhawan',
+          },
+          parking: {
+            name: 'Total Distance : '+{{distance}}+' Km',
+          }
+        };
+        var legend = document.getElementById('legend');
+        for (var key in icons) {
+          var type = icons[key];
+          var name = type.name;
+          var icon = type.icon;
+          var div = document.createElement('div');
+          div.innerHTML = name;
+          legend.appendChild(div);
+        }
+
+        map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
+        
+      }
+
+
+
+
+    </script>
+    <script async defer
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCm8rnRUZU0ecO8hpCF3KVANv9LmAXv0hc&callback=initMap">
+      </script>
+  </body>
+
+</html>

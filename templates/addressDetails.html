@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Home Page!!</title>
+    <link rel="icon" type="image/ico" href="{%static 'images/logo.png'%}" />
+
+  </head>
+  <style>
+    .card {
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      transition: 0.3s;
+      width: 90%;
+      border-radius: 5px;
+      padding-bottom: 10px;
+    }
+
+    .card1 {
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      transition: 0.3s;
+      width: 600px;
+      border-radius: 5px;
+      padding-bottom: 10px;
+    }
+
+    .card1:hover {
+      box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    img {
+      border-radius: 5px 5px 0 0;
+      padding-left: 10px;
+    }
+
+    label {
+      padding-left: 20px;
+      padding-bottom: 15px;
+      font-size: 25px;
+    }
+
+    .box {
+      width: 300px;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .dot {
+      padding-left: 250px;
+    }
+
+    .scrollit {
+      overflow: scroll;
+      height: 800px;
+    }
+
+    .circle {
+      border-radius: 100%;
+      border: 2px solid #ff675b;
+      padding-left: 5px;
+    }
+
+    input[type=text],
+    select {
+      width: 80%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 15px 12px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+
+    .button3 {
+      border-radius: 15px;
+    }
+
+    .btn {
+      background-color: #A10909;
+      border: none;
+      color: white;
+      padding: 5px 15px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+
+    .btnbuy {
+      background-color: #A10909;
+      border: none;
+      color: white;
+      padding: 15px 35px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+  </style>
+
+  <body>
+    <form name="home" action="{% url 'myapp:addressDetails' %}" method="POST" autocomplete="off">
+      <!-- <center>
+		<h1>welcome {{user}}</h1> <a href="{%url 'myapp:logout' %}"> Logout</a>
+		<hr> -->
+      {%csrf_token %}
+      <center>
+        <table>
+          <tr>
+            <td width="500">
+              <div class="card">
+                <table border="0" align="center">
+                  <tr>
+                    <th width="100"><a href="{%url 'myapp:home' %}"> <img src="{% static 'images/home.png'%}" width="45"
+                          height="40"></a></th>
+                    <th width="250"><img src="{% static 'images/header.png' %}" width="200"></th>
+                    <th width="50"> <a href="{%url 'myapp:cart'%}"><img class="tv" src="{% static 'images/kart.jpg'%}"
+                          width="40" height="40"></a></th>
+                    <th width="50"> <a href="{%url 'myapp:profile'%}"><img class="tv"
+                          src="{% static 'images/profile.png'%}" width="40" height="40"></a></th>
+                    <th width="100"> <a href="{%url 'myapp:logout' %}"><img src="{% static 'images/logout.png'%}"
+                          width="40" height="40"></a></th>
+                  </tr>
+                </table>
+              </div>
+            </td>
+          </tr>
+        </table>
+        <div class="card1">
+          <table width="500">
+            <tr>
+              <td><label>Name:</label></td>
+              <td><input type="text" name="name" > </td>
+            </tr>
+            <tr>
+              <td><label>Mobile:</label></td>
+              <td><input type="text" name="mobile"> </td>
+            </tr>
+            <tr>
+              <td><label>Address:</label></td>
+              <td><textarea rows="5" cols="30" name="address" minlength="10" maxlength="100" class="box"></textarea>
+              </td>
+            </tr>
+            <tr>
+              <td><label>Pin:</label></td>
+              <td><input type="text" name="pin" maxlength="8"> </td>
+            </tr>
+            <tr>
+              <td colspan="2" align="center">
+                <button class="button button3">Process to Pay</button>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </center>
+
+
+
+
+    </form>
+  </body>
+
+</html>

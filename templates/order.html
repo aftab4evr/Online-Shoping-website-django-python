@@ -1,0 +1,296 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>Home Page!!</title>
+		<link rel="icon" type="image/ico" href="{%static 'images/logo.png'%}" />
+
+	</head>
+	<style>
+		.card {
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+			transition: 0.3s;
+			width: 100%;
+			border-radius: 5px;
+			padding-bottom: 10px;
+		}
+
+		.card:hover {
+			box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+		}
+
+		img {
+			border-radius: 5px 5px 0 0;
+			padding-left: 10px;
+		}
+
+		label {
+			padding-left: 20px;
+			padding-bottom: 15px;
+			font-size: 22px;
+		}
+
+
+		.dot {
+			padding-left: 250px;
+		}
+
+		.scrollit {
+			overflow: scroll;
+			height: 800px;
+		}
+
+		.circle {
+			border-radius: 100%;
+			border: 2px solid #ff675b;
+			padding-left: 5px;
+		}
+
+		input[type=text],
+		select {
+			width: 50%;
+			padding: 12px 20px;
+			margin: 8px 0;
+			display: inline-block;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			box-sizing: border-box;
+		}
+
+		.button {
+			background-color: #4CAF50;
+			border: none;
+			color: white;
+			padding: 15px 12px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			margin: 4px 2px;
+			cursor: pointer;
+		}
+
+		.btn {
+			background-color: #A10909;
+			border: none;
+			color: white;
+			padding: 5px 15px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			margin: 4px 2px;
+			cursor: pointer;
+		}
+
+		.btnbuy {
+			background-color: #A10909;
+			border: none;
+			color: white;
+			padding: 15px 35px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			margin: 4px 2px;
+			cursor: pointer;
+		}
+
+		.select-style {
+			border: 1px solid #ccc;
+			width: 120px;
+			border-radius: 3px;
+			overflow: hidden;
+			background: #fafafa url("img/icon-select.png") no-repeat 90% 50%;
+		}
+
+		.select-style select {
+			padding: 5px 8px;
+			width: 150%;
+			border: none;
+			text-align: center;
+			box-shadow: none;
+			background: transparent;
+			background-image: none;
+			-webkit-appearance: none;
+		}
+
+		.select-style select:focus {
+			outline: none;
+		}
+
+
+		#snackbar {
+			visibility: hidden;
+			min-width: 250px;
+			margin-left: -125px;
+			background-color: #333;
+			color: #fff;
+			text-align: center;
+			border-radius: 2px;
+			padding: 16px;
+			position: fixed;
+			z-index: 1;
+			left: 50%;
+			bottom: 30px;
+			font-size: 17px;
+		}
+
+		#snackbar.show {
+			visibility: visible;
+			-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+			animation: fadein 0.5s, fadeout 0.5s 2.5s;
+		}
+
+		@-webkit-keyframes fadein {
+			from {
+				bottom: 0;
+				opacity: 0;
+			}
+
+			to {
+				bottom: 30px;
+				opacity: 1;
+			}
+		}
+
+		@keyframes fadein {
+			from {
+				bottom: 0;
+				opacity: 0;
+			}
+
+			to {
+				bottom: 30px;
+				opacity: 1;
+			}
+		}
+
+		@-webkit-keyframes fadeout {
+			from {
+				bottom: 30px;
+				opacity: 1;
+			}
+
+			to {
+				bottom: 0;
+				opacity: 0;
+			}
+		}
+
+		@keyframes fadeout {
+			from {
+				bottom: 30px;
+				opacity: 1;
+			}
+
+			to {
+				bottom: 0;
+				opacity: 0;
+			}
+		}
+	</style>
+
+	<body onload="onLoad()">
+		<form name="home" action="{% url 'myapp:home' %}" method="POST" id="home">
+			{%csrf_token %}
+			<center>
+				<table>
+					<tr>
+						<td width="500">
+							<div class="card">
+								<table border="0" align="center">
+									<tr>
+										<th width="100"><a href="{%url 'myapp:home' %}"> <img src="{% static 'images/home.png'%}" width="45"
+													height="40"></a></th>
+                                        <th width="250"><a href="{%url 'myapp:home' %}" ><img src="{% static 'images/header.png' %}" width="200"></a></th>										<th width="50"> <a href="{%url 'myapp:cart'%}"><img class="tv" src="{% static 'images/kart.jpg'%}"
+													width="40" height="40"></a></th>
+										<th width="50"> <a href="{%url 'myapp:profile'%}"><img class="tv"
+													src="{% static 'images/profile.png'%}" width="40" height="40"></a></th>
+										<th width="100"> <a href="{%url 'myapp:order' %}"><img src="{% static 'images/order.png'%}"
+													width="40" height="40"></a></th>
+										<th width="100"> <a href="{%url 'myapp:logout' %}"><img src="{% static 'images/logout.png'%}"
+													width="40" height="40"></a></th>
+									</tr>
+								</table>
+							</div>
+						</td>
+					</tr>
+				</table>
+				<div class="scrollit">
+					<table border="0" align="center">
+						{% if order %}
+						{% for order in order %}
+						<tr style="margin: 20px">
+							<td width="600">
+								<div class="card">
+									<div align="center" style="margin: 10px">
+										<table border="0">
+											<tr>
+												<td width="100">
+													<label>Name</label>
+												</td>
+												<td align="left">
+													<label>{{order.name}}</label>
+												</td>
+											</tr>
+											<tr>
+												<td width="100">
+													<label>Order Id</label>
+												</td>
+												<td align="left">
+													<label>{{order.book_id}}</label>
+												</td>
+											</tr>
+											<tr>
+												<td width="100">
+													<label>Amount</label>
+												</td>
+												<td align="left">
+													<label>{{order.price}}</label>
+												</td>
+											</tr>
+											<tr>
+												<td width="100">
+													<label>Addres</label>
+												</td>
+												<td align="left">
+													<label>{{order.address}}</label>
+												</td>
+											</tr>
+											<tr>
+												<td width="100">
+													<label>Pin</label>
+												</td>
+												<td align="left">
+													<label>{{order.pin}}</label>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="2" align="center"><label><a href="{%url 'myapp:map'%}">Track Order Here</a></label>
+												</td>
+											</tr>
+										</table>
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td height="50">
+							</td>
+						</tr>
+						{%endfor%}
+						{%else%}
+						<div class="card" style="width: 500px">
+							<br><br><br>
+							<div style="font-size: 25px">No Order Till Now</div>
+							<br><br><br>
+						</div>
+						{%endif%}
+					</table>
+				</div>
+			</center>
+		</form>
+	</body>
+</html>

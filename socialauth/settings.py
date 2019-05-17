@@ -75,7 +75,7 @@ TEMPLATES = [
 ]
 
 AUTHENTICATION_BACKENDS=(   
-    'social_core.backends.google.GoogleOAuth2',  # for Google authentication
+    'social_core.backends.google.GoogleOAuth2',
     'social_core.backends.facebook.FacebookOAuth2',
     'django.contrib.auth.backends.ModelBackend',
     #   'social.backends.linkedin.LinkedinOAuth2',
@@ -87,13 +87,18 @@ WSGI_APPLICATION = 'socialauth.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'shoppingdb',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST':'localhost',
+        'PORT': '5432',
+    },
 }
-# AUTH_USER_MODEL = 'web.MyUser'
+AUTH_USER_MODEL = 'myapp.MyUser'
 
 SOCIAL_AUTH_FACEBOOK_KEY ='310373552954331' 
 SOCIAL_AUTH_FACEBOOK_SECRET = 'e72027919de8e7eb67c857170fe962df'

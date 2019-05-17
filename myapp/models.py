@@ -9,78 +9,84 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Permis
 from geoposition.fields import GeopositionField
 
 
-class SingUp(models.Model):
-	email = models.EmailField(
-        "Email", unique=True,max_length=100
+class MyUserManager(BaseUserManager):
+    ''' Inherits BaseUserManager class'''
+
+    def create_superuser(self, email, password):
+        '''Creates and saves a superuser with the given email and password.'''
+        user = self.model(email=email)
+        user.set_password(password)
+        user.is_superuser = True
+        user.is_active = True
+        user.is_staff = True
+        user.save(using=self._db)
+        return user
+
+    def create_user(self, email, password=None):
+        """
+        Create user with given email and password.
+        :param email:
+        :param password:
+        :return:
+        """
+        if not email:
+            raise ValueError('Users must have an email address')
+        user = self.model(email=self.normalize_email(email))
+        # set_password is used set password in encrypted form.
+        # user.set_password(blank=True)
+        user.is_active = True
+        user.save(using=self._db)
+        return user
+
+
+# # --------------Model for website User--------------------
+
+class MyUser(AbstractBaseUser, PermissionsMixin):
+    '''Base User Table used same for Authentication Purpose	'''
+    
+    '''Docstring for MyUser'''
+    uuid = models.UUIDField(
+        default=uuid.uuid4, editable=False, unique=True
     )
-	full_name = models.CharField(
+    email = models.EmailField(
+        "Email", unique=True,max_length=100
+        )
+    full_name = models.CharField(
         "Full Name", max_length=40
     )
-	mobile = models.CharField(
-        "Mobile", max_length=15, unique=False
+    mobile = models.CharField(
+        "Mobile", max_length=15, unique=True
     )
-	password = models.CharField(
-        "password", max_length=200, unique=False
-    )
-	is_block = models.BooleanField(
+    
+    is_block = models.BooleanField(
         default=False
     )
-	is_active = models.BooleanField(
-        'Active', default=True
-	)
-	# last_login=models.DateTimeField(
-	# 	 auto_now_add=True
-	# )
-	is_staff = models.BooleanField('Staff', 
-		default=False
+    otp = models.CharField(
+        'OTP', max_length=4, blank=True, null=True
     )
-	created_at = models.DateTimeField(
+    is_otp_verified = models.BooleanField(
+        'OTP Verified ', default=False
+    )
+
+    is_active = models.BooleanField(
+        'Active', default=True)
+    is_staff = models.BooleanField('Staff', default=False
+    )
+    created_at = models.DateTimeField(
         auto_now_add=True
     )
-	is_superuser = models.BooleanField(
+    is_superuser = models.BooleanField(
         default=False
     )
-	updated_at = models.DateTimeField(
+    updated_at = models.DateTimeField(
         auto_now=True
     )
+    objects = MyUserManager()
+    USERNAME_FIELD = 'email' 
 
-	def __str__(self):
-		return self.full_name
-
-# class Aftab(models.Model):
-#     '''Base User Table used same for Authentication Purpose	'''
-#     uuid = models.UUIDField(
-#         default=uuid.uuid4, editable=False, unique=True
-#     )
-#     email = models.EmailField(
-#         "Email", unique=True,max_length=100
-#         )
-#     full_name = models.CharField(
-#         "Full Name", max_length=40
-#     )
-#     mobile = models.CharField(
-#         "Mobile", max_length=15, unique=False
-#     )
-#     is_block = models.BooleanField(
-#         default=False
-#     )
-#     is_active = models.BooleanField(
-#         'Active', default=True)
-#     is_staff = models.BooleanField('Staff', default=False
-#     )
-#     created_at = models.DateTimeField(
-#         auto_now_add=True
-#     )
-#     is_superuser = models.BooleanField(
-#         default=False
-#     )
-#     updated_at = models.DateTimeField(
-#         auto_now=True
-#     )
-
-	# def __str__(self):
-	# 	pass
-
+    def __str__(self):
+        """:return: the email"""
+        return self.full_name
 
 class PointOfInterest(models.Model):
     email = models.CharField(max_length=100)

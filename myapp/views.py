@@ -99,7 +99,6 @@ class Order(View):
 
 class GeneratePdf(View):
     def get(self, request, *args, **kwargs):
-        # template = get_template('invoice.html')
         data=Cart.objects.filter(email=request.user.username)
         context = {
             "invoice_id": request.session['BOOK_ID'],
@@ -110,8 +109,6 @@ class GeneratePdf(View):
             "data":data,
             "rs":request.session['TOTAL']
         }
-        # html = template.render(context)
-        # return render(request,'invoice.html',{context})
         pdf = render_to_pdf('invoice.html', context,)
         if pdf:
             response = HttpResponse(pdf, content_type='application/pdf')
@@ -190,8 +187,6 @@ def filterByChoice(request,choice):
 	prod=Products.objects.filter(choice=choice.strip())
 	return render(request,"home.html",{'prod':prod,'choice':itemchoice,'name':name})
 
-
-
 def sortitem(request,id):
 	choice=ProductChoice.objects.all()
 	if int(id) is 1:
@@ -242,7 +237,7 @@ class Home(View):
 		# paginator=Paginator(prod,3)
 		# page=request.GET.get('page')
 		# prod=paginator.get_page(page)
-		username = request.user.username
+		username = request.user
 		return render(request,"home.html",{'prod':prod,'user':username,'choice':choice,'name':name})	
 
 	def post(self,request):
@@ -256,8 +251,6 @@ class Home(View):
 			quan.quantity=quan.quantity+1
 			quan.total=quan.price*quan.quantity
 			quan.save()
-			# q=Cart.objects.filter(email=username).count()
-			# request.session['cart_item']=q
 			return redirect('myapp:home')
 		else:
 			data=Cart()
@@ -340,8 +333,6 @@ def addByID(request,pid):
 		rs=quan.price*quan.quantity
 		quan.total=rs
 		quan.save()
-		# q=Cart.objects.filter(email=username).count()
-		# request.session['cart_item']=q
 		return redirect('myapp:cart')
 
 	else:

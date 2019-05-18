@@ -55,19 +55,9 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
         "Full Name", max_length=40
     )
     mobile = models.CharField(
-        "Mobile", max_length=15, unique=True
+        "Mobile", max_length=15, unique=False
     )
     
-    is_block = models.BooleanField(
-        default=False
-    )
-    otp = models.CharField(
-        'OTP', max_length=4, blank=True, null=True
-    )
-    is_otp_verified = models.BooleanField(
-        'OTP Verified ', default=False
-    )
-
     is_active = models.BooleanField(
         'Active', default=True)
     is_staff = models.BooleanField('Staff', default=False
@@ -86,7 +76,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         """:return: the email"""
-        return self.full_name
+        return self.email
 
 class PointOfInterest(models.Model):
     email = models.CharField(max_length=100)

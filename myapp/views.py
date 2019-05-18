@@ -54,13 +54,13 @@ class UserRegistration(View):
 	def post(self,request):
 		form = SingUpForm(request.POST or None)
 		if form.is_valid():
-			# return HttpResponse("valid")
 			myUser = form.save()
 			myUser.is_active = True
+			myUser.set_password(request.POST.get('password'))
 			myUser.save()
 			return redirect("myapp:login")
 		else:
-			return render(request, 'login.html', {"form": form})
+			return render(request, 'index.html', {"form": form})
 
 # class MultipalChoice(View):
 # 	def get(sel,request):
@@ -94,15 +94,15 @@ class Map(View):
 
 class Order(View):
 	def get(self,request):
-		ord=Orders.objects.filter(email=request.user.username).order_by('-id','-id')
+		ord=Orders.objects.filter(email=request.user).order_by('-id','-id')
 		return render(request,'order.html',{'order':ord})
 
 class GeneratePdf(View):
     def get(self, request, *args, **kwargs):
-        data=Cart.objects.filter(email=request.user.username)
+        data=Cart.objects.filter(email=request.user)
         context = {
             "invoice_id": request.session['BOOK_ID'],
-            "name": request.user.username,
+            "name": request.user,
             "amount": request.session['TOTAL'],
             "email":request.user.email,
             "today": datetime.date.today(),
@@ -124,7 +124,7 @@ class GeneratePdf(View):
 class Sucess(View):
 	def get(self,request):
 		request.session['PAID']=True;
-		Cart.objects.filter(email=request.user.username).delete()
+		Cart.objects.filter(email=request.user).delete()
 		return render(request,'sucess.html')
 
 class PaypalDone(View):
@@ -151,19 +151,17 @@ class Login(View):
 		return render(request,"index.html")
 	def post(self,request):
 		email=request.POST.get('email')
-		password=request.POST.get('password')
+		password=request.POST.get('name_password')
 		try:
-			user=SingUp.objects.get(email=email)
+			user=MyUser.objects.get(email=email)
 		except:
 			return render(request,'index.html',{'msgEmail':"Email id  does not Exist"})
-		
-		user=SingUp.objects.get(email=email)
-		if user.password == password:
-			# user.last_login= timezone.now() 
+		user = authenticate(email=email, password=password)
+
+		if user:
 			login(request, user)
-			return redirect("myapp:home")
-		return HttpResponse("Not Matched")
-		# return render(request,'index.html',{'msgPassword':"Invalid Password"})
+			return redirect('myapp:home')
+		return render(request, 'index.html', {'invalidEmail': "Invalid Email Id or Password"})
 
 @method_decorator(login_required,name='dispatch')		
 class Profile(View):
@@ -200,29 +198,7 @@ def sortitem(request,id):
 	elif int(id) is 4:
 		return redirect("myapp:home")
 		
-class AddToCart(View):
-	def get(self,request):
-		pid=request.GET['post_id']
-		username=request.user.username
-		pro=Products.objects.get(product_id=pid)
-		cart=Cart.objects.filter(email=username,book_id=pid).exists()
-		if cart:
-			quan=Cart.objects.get(email=username,book_id=pid)
-			quan.quantity=quan.quantity+1
-			quan.total=quan.price*quan.quantity
-			quan.save()
-			return redirect('myapp:home')
-		else:
-			data=Cart()
-			data.email=username
-			data.book_id=pid
-			data.book_name=request.user.username
-			data.total=pro.offer_price
-			data.prd_name=pro.name
-			data.img=pro.img.url
-			data.price=pro.offer_price
-			data.save()
-			return redirect('myapp:home')
+
 
 @method_decorator(login_required,name='dispatch')		
 class Home(View):
@@ -243,7 +219,7 @@ class Home(View):
 	def post(self,request):
 		pid=request.POST.get('button')
 		request.session['PID'] = pid
-		username=request.user.username
+		username=request.user
 		pro=Products.objects.get(product_id=pid)
 		cart=Cart.objects.filter(email=username,book_id=pid).exists()
 		if cart:
@@ -256,17 +232,39 @@ class Home(View):
 			data=Cart()
 			data.email=username
 			data.book_id=pid
-			data.book_name=request.user.username
+			data.book_name=request.user
 			data.total=pro.offer_price
 			data.prd_name=pro.name
 			data.img=pro.img.url
 			data.price=pro.offer_price
 			data.save()
 			return redirect('myapp:home')
-
+class AddToCart(View):
+	def get(self,request):
+		pid=request.GET['post_id']
+		username=request.user
+		pro=Products.objects.get(product_id=pid)
+		cart=Cart.objects.filter(email=username,book_id=pid).exists()
+		if cart:
+			quan=Cart.objects.get(email=username,book_id=pid)
+			quan.quantity=quan.quantity+1
+			quan.total=quan.price*quan.quantity
+			quan.save()
+			return redirect('myapp:home')
+		else:
+			data=Cart()
+			data.email=username
+			data.book_id=pid
+			data.book_name=request.user
+			data.total=pro.offer_price
+			data.prd_name=pro.name
+			data.img=pro.img.url
+			data.price=pro.offer_price
+			data.save()
+			return redirect('myapp:home')
 class CartView(View):
 	def get(self,request):
-		data=Cart.objects.filter(email=request.user.username)
+		data=Cart.objects.filter(email=request.user)
 		rs=0
 		for q in data:
 			rs =rs+ q.total
@@ -277,7 +275,7 @@ class CartView(View):
 		button=request.POST.get('button')
 		lat=22.916250
 		lng=88.384300
-		username=request.user.username
+		username=request.user
 		if button=='Checkout':
 			request.session['LAT']=lat
 			request.session['LNG']=lng
@@ -290,8 +288,8 @@ class AddressDetails(View):
 	def get(self,request):
 		return render(request,'addressDetails.html')
 	def post(self,request):
-		email=request.user.username
-		cart=Cart.objects.filter(email=request.user.username)
+		email=request.user
+		cart=Cart.objects.filter(email=request.user)
 		mobile=request.POST.get('mobile')
 		address=request.POST.get('address')
 		pin=request.POST.get('pin')
@@ -324,7 +322,7 @@ class Buy(View):
 		return redirect("myapp:payment")
 
 def addByID(request,pid):
-	username=request.user.username
+	username=request.user
 	pro=Products.objects.get(product_id=pid)
 	cart=Cart.objects.filter(email=username,book_id=pid).exists()
 	if cart:
@@ -339,7 +337,7 @@ def addByID(request,pid):
 		data=Cart()
 		data.email=username
 		data.book_id=pid
-		data.book_name=request.user.username
+		data.book_name=request.user
 		data.total=pro.offer_price
 		data.prd_name=pro.name
 		data.img=pro.img.url

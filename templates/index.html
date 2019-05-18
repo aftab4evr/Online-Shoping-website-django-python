@@ -130,30 +130,32 @@
 
                 </a>
               </center>
-              <form action="{%url 'myapp:login' %}" method="POST" autocomplete="on">
+              <form action="{%url 'myapp:login' %}" method="POST" onsubmit="return isLogindataValidate()" autocomplete="off">
                 <h1>-------or------- <br>Log in</h1>
                 {% csrf_token %}
                 <p>
                   <label for="emailsignup" class="youmail" data-icon="e"> Your email</label>
-                  <input id="emailsignup" name="email" required="required" type="email"
+                  <input  name="email" id="log_id_email" type="email"
                     placeholder="admin@testing.com" />
+                  <p style="color: red" id="log_p_email"></p>
                   {% if msgEmail %}
                   <p style="color: red">{{msgEmail}}</p>
                   {% endif %}
                 </p>
                 <p>
                   <label for="password" class="youpasswd" data-icon="p"> Your password </label>
-                  <input id="password" name="password" type="password" placeholder="user@123" />
+                  <input id="log_id_password" name="name_password" type="password" placeholder="user@123" />
+                  <p style="color: red" id="log_p_password"></p>
                   {% if msgPassword %}
                   <p style="color: red">{{msgPassword}}</p>
                   {% endif %}
                 </p>
                 <p class="keeplogin">
-                  <input type="checkbox" name="loginkeeping" id="loginkeeping" value="loginkeeping" />
+                  <input type="checkbox" name="remember_me" id="remember_me" value="loginkeeping" />
                   <label for="loginkeeping">Keep me logged in</label>
                 </p>
                 <p class="login button">
-                  <input type="submit" value="Login" />
+                  <input type="submit" value="Login"/>
                 </p>
                 <p class="change_link">
                   Not a member yet ?
@@ -163,36 +165,58 @@
             </div>
 
             <div id="register" class="animate form">
-              <form action="{%url 'myapp:userregister' %}" method="POST">
+              <form action="{%url 'myapp:userregister' %}" method="POST" onsubmit="return validateAllData()">
                 {% csrf_token %}
                 <h1> Sign up </h1>
                 <p>
                   <label for="usernamesignup" class="uname" data-icon="u">Your Name</label>
-                  <input id="name" name="full_name" required="" type="text" placeholder="Admin Test" />
+                  <input id="id_full_name" name="full_name" value="{{form.full_name.value}}" type="text"
+                    placeholder="Admin Test" />
+                   <p id="p_full_name" style="color: red"></p>
+
+                  {% if form.errors.full_name %}
+                  <div style="color: red">
+                    {{form.errors.full_name}}
+                  </div>
+                  {% endif %}
                 </p>
 
                 <p>
                   <label for="usernamesignup" class="uname" data-icon="u">Your Mobile No</label>
-                  <input id="mobile" name="mobile" required="" type="text" placeholder="9876543210" />
-                </p>
+                  <input id="id_mobile" name="mobile" value="{{form.mobile.value}}" type="text"
+                    placeholder="9876543210" />
+                    <p id="p_mobile" style="color: red"></p>
+                  {% if form.errors.mobile %}
+                  <div style="color: red">
+                    {{form.errors.mobile}}
+                  </div>
+                  {% endif %} </p>
                 <p>
                   <label for="emailsignup" class="youmail" data-icon="e"> Your email</label>
-                  <input id="emailsignup" name="email" required="required" type="email"
+                  <input id="id_email" name="email" type="email" value="{{form.email.value}}"
                     placeholder="admin@testing.com" />
+                  <p id="p_email" style="color: red"></p>
+
+                  {% if form.errors.email %}
+                  <div style="color: red">
+                    {{form.errors.email}}
+                  </div>
+                  {% endif %}
                 </p>
                 <p>
                   <label for="passwordsignup" class="youpasswd" data-icon="p">Your password </label>
-                  <input id="password" name="password" required="required" type="password"
-                    placeholder="Admin@testing" />
+                  <input id="id_password" name="password" type="password" placeholder="Admin@testing" />
+                  <div id="p_password" style="color: red"></div>
                 </p>
                 <p>
                   <label for="passwordsignup_confirm" class="youpasswd" data-icon="p">Please confirm your password
                   </label>
-                  <input id="confirmpassword" name="confirmpassword" required="required" type="password"
-                    placeholder="Admin@testing" />
+                  <input id="id_confirmpassword" name="confirmpassword" type="password" placeholder="Admin@testing" />
+                  <div id="p_confirmpassword" style="color: red"></div>
+
                 </p>
                 <p class="signin button">
-                  <input type="submit" value="Sign up" />
+                  <input type="submit" value="Sign up" onclick="clickMe()" />
                 </p>
                 <p class="change_link">
                   Already a member ?
@@ -204,6 +228,346 @@
         </div>
       </section>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
+
+    <script>
+      var isMatchedPassword = false;
+      var isEight = false;
+      var isEmailValid=false;
+      var isMobileValid=false;
+      var isNameValid=false;
+
+      var isLogEmailValid=false;
+      var isLogPasswordValid=false;
+      $("#log_id_email").on('keyup', function () {
+        emailLogValidate();
+      });
+
+      $("#log_id_password").on('keyup', function () {
+        logibPasswordValidate();
+      });
+      isLogindataValidate=function(){
+        emailLogValidate();
+        logibPasswordValidate();
+        if(isLogEmailValid && isLogPasswordValid){
+          return true;
+        }else{
+          return false;
+        }
+      }
+      function logibPasswordValidate() {
+            let password = $("#log_id_password").val();
+            let lowerCaseFilter = /[a-z]/g;
+            let upperCaseFilter = /[A-Z]/g;
+            let digitsFilter = /[0-9]/g;
+            let specialFilter = /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi;
+            let isLower = false;
+            let isUpper = false;
+            let isDigit = false;
+            let isSpecial = false;
+           
+            $("#log_p_password").show();
+            isEight = false;
+            isLogPasswordValid = false;
+            if (lowerCaseFilter.test(password)) {
+                isLower = true;
+            } else {
+                isLower = false;
+            }
+
+            if (upperCaseFilter.test(password)) {
+                isUpper = true;
+            } else {
+                isUpper = false;
+            }
+
+            if (digitsFilter.test(password)) {
+                isDigit = true;
+            } else {
+                isDigit = false;
+            }
+
+            if (specialFilter.test(password)) {
+                isSpecial = true;
+            } else {
+                isSpecial = false;
+            }
+            if (isLower == false) {
+                $('#log_p_password').text("Must contain a Lower letter").css("color", "red");
+            } else if (isUpper == false) {
+                $('#log_p_password').text("Must contain a Capital letter").css("color", "red");
+            } else if (isDigit == false) {
+                $('#log_p_password').text("Must contain a Digits").css("color", "red");
+            } else if (isSpecial == false) {
+                $('#log_p_password').text("Must contain a Special letter").css("color", "red");
+            }
+
+            if (isLower == true && isUpper == true && isDigit == true && isSpecial == true) {
+                if (password.length >= 8) {
+                    isEight = true;
+                } else {
+                    $('#log_p_password').text("Password should be 8 letter!").css("color", "red");
+                    isEight = false;
+                }  
+            }
+            if (isEight) {
+                isLogPasswordValid = true
+                $('#log_p_password').text("Valid Password").css("color", "green");
+                $("#log_id_password").css('border-color', 'green');
+                $("#log_p_password").hide();
+            }
+        }
+
+      function emailLogValidate() {
+        let email = $("#log_id_email").val();
+        isLogEmailValid = false;
+        var emailRe = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        if (email.length == 0) {
+          isLogEmailValid = false;
+          $("#log_id_email").css('border-color', 'red');
+          $("#log_p_email").text("This field is required.").css("color", "red");
+        } else {
+          if (emailRe.test(email)) {
+            isLogEmailValid = true;
+            $("#log_id_email").css('border-color', 'green');
+            $("#log_p_email").text("")
+          } else {
+            isLogEmailValid = false;
+            $("#log_id_email").css('border-color', 'red');
+            $("#log_p_email").text("Invalid email").css("color", "red");
+          }
+        }
+      }
+      $(function () {
+        if (localStorage.chkbx && localStorage.chkbx != '') {
+          $('#remember_me').attr('checked', 'checked');
+          $('#log_id_email').val(localStorage.usrname);
+          $('#log_id_password').val(localStorage.pass);
+        } else {
+          $('#remember_me').removeAttr('checked');
+          $('#log_id_email').val('');
+          $('#log_id_password').val('');
+        }
+        $('#remember_me').click(function () {
+          if ($('#remember_me').is(':checked')) {
+            localStorage.usrname = $('#log_id_email').val();
+            localStorage.pass = $('#log_id_password').val();
+            localStorage.chkbx = $('#remember_me').val();
+          } else {
+            localStorage.usrname = '';
+            localStorage.pass = '';
+            localStorage.chkbx = '';
+          }
+        });
+      });
+//-------------------------------------------------------------------------------------
+      validateAllData = function () {
+        mobileValidate();
+        nameValidate();
+        matchPassword();
+        emailValidate();
+
+        // alert(isMatchedPassword)
+        // alert(isEmailValid)
+        // alert(isMobileValid)
+        // alert(isNameValid)
+        if(isMatchedPassword && isEmailValid && isMobileValid && isNameValid){
+          return true;
+        }else{
+          return false;
+        }
+      }
+
+      $("#id_mobile").on('keyup', function () {
+        mobileValidate();
+      });
+      $("#id_full_name").on('keyup', function () {
+        //  alert("hii")
+        nameValidate();
+      });
+
+      $("#id_email").on('keyup', function () {
+        emailValidate();
+      });
+
+
+      $("#id_password").on('keyup', function () {
+            let len=($("#id_confirmpassword").val()).length;
+            if(len!=0){
+                newPasswordValidate();
+                matchPassword();
+            }else{
+             newPasswordValidate();
+            }
+            
+        });
+        $("#id_confirmpassword").on('keyup', function () {
+            matchPassword();
+            newPasswordValidate();
+        });
+
+        function matchPassword() {
+            isMatchedPassword = false;
+            let con_pass = $("#id_confirmpassword").val();
+            let pass = $("#id_password").val();
+            $('#p_confirmpassword').show();
+            $("#p_password").show();
+
+            if (con_pass != '' || pass != '') {
+                if (con_pass === pass && isEight) {
+                    isMatchedPassword = true;
+                    $('#p_password').text("Password match").css("color", "green");
+                    $('#p_confirmpassword').text("").css("color", "green");
+                    $("#id_password").css('border-color', 'green');
+                    $("#id_confirmpassword").css('border-color', 'green');
+                    $("#p_password").hide();
+                    $("#p_confirmpassword").hide();
+                } else {
+                    $('#p_password').text("Password doesn't match.").css("color", "red");
+                    $('#p_confirmpassword').text("Confirm Password doesn't match.").css("color", "red");
+                    isMatchedPassword = false;
+                    $("#id_password").css('border-color', 'red');
+                    $("#id_confirmpassword").css('border-color', 'red');
+                    $('#p_confirmpassword').show();
+                    $("#p_password").show();
+                }
+            } else {
+                $('#p_password').text("Password can't be empty").css("color", "red");
+                $('#p_confirmpassword').text("Confirm Password can't be empty").css("color", "red");
+                $("#id_password").css('border-color', 'red');
+                $("#id_confirmpassword").css('border-color', 'red');
+                $('#p_confirmpassword').show();
+                $("#p_password").show();
+                isMatchedPassword = false;
+            }
+        }
+        function newPasswordValidate() {
+            let password = $("#id_password").val();
+            let lowerCaseFilter = /[a-z]/g;
+            let upperCaseFilter = /[A-Z]/g;
+            let digitsFilter = /[0-9]/g;
+            let specialFilter = /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi;
+            let isLower = false;
+            let isUpper = false;
+            let isDigit = false;
+            let isSpecial = false;
+            $("#p_password").show();  
+            $("#p_confirmpassword").show();
+            isEight = false;
+            isPasswordValidate = false;
+            if (lowerCaseFilter.test(password)) {
+                isLower = true;
+            } else {
+                isLower = false;
+            }
+
+            if (upperCaseFilter.test(password)) {
+                isUpper = true;
+            } else {
+                isUpper = false;
+            }
+
+            if (digitsFilter.test(password)) {
+                isDigit = true;
+            } else {
+                isDigit = false;
+            }
+
+            if (specialFilter.test(password)) {
+                isSpecial = true;
+            } else {
+                isSpecial = false;
+            }
+            if (isLower == false) {
+                $('#p_password').text("Must contain a Lower letter").css("color", "red");
+            } else if (isUpper == false) {
+                $('#p_password').text("Must contain a Capital letter").css("color", "red");
+            } else if (isDigit == false) {
+                $('#p_password').text("Must contain a Digits").css("color", "red");
+            } else if (isSpecial == false) {
+                $('#p_password').text("Must contain a Special letter").css("color", "red");
+            }
+
+            if (isLower == true && isUpper == true && isDigit == true && isSpecial == true) {
+                if (password.length >= 8) {
+                    isEight = true;
+                } else {
+                    $('#p_password').text("Password should be 8 letter!").css("color", "red");
+                    isEight = false;
+                }  
+            }
+            if (isEight) {
+                isPasswordValidate = true
+                $('#p_password').text("Valid Password").css("color", "green");
+                $("#id_password").css('border-color', 'green');
+                $("#p_password").hide();
+            }
+        }
+
+       
+        
+      function emailValidate() {
+        let email = $("#id_email").val();
+        isEmailValid = false;
+        var emailRe = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+        if (email.length == 0) {
+          isEmailValid = false;
+          $("#id_email").css('border-color', 'red');
+          $("#p_email").text("This field is required.").css("color", "red");
+        } else {
+          if (emailRe.test(email)) {
+            isEmailValid = true;
+            $("#id_email").css('border-color', 'green');
+            $("#p_email").text("")
+          } else {
+            isEmailValid = false;
+            $("#id_email").css('border-color', 'red');
+            $("#p_email").text("Invalid email").css("color", "red");
+          }
+        }
+      }
+      function mobileValidate() {
+        let mobile = $("#id_mobile").val();
+        isMobileValid = false;
+        if (mobile.length == 0) {
+          isMobileValid = false;
+          $("#id_mobile").css('border-color', 'red');
+          $("#p_mobile").text("This field is required.").css("color", "red");
+        } else {
+          if (mobile.length == 10) {
+            $("#id_mobile").css('border-color', 'green');
+            $("#p_mobile").text("")
+            isMobileValid = true;
+          } else {
+            isMobileValid = false;
+            $("#id_mobile").css('border-color', 'red');
+            $("#p_mobile").text("Mobile No Should be 10 Digits.").css("color", "red");
+          }
+        }
+      }
+      function nameValidate() {
+        isNameValid = false;
+        let name = $("#id_full_name").val();
+        var re = /^[A-Za-z+ ' ']+$/;
+        $("#p_full_name").show()
+        if (name.length === 0) {
+          isNameValid = false;
+          $("#id_full_name").css('border-color', 'red');
+          $("#p_full_name").text("This field is required.").css("color", "red");
+        } else {
+          if (re.test(name)) {
+            isNameValid = true;
+            $("#id_full_name").css('border-color', 'green');
+            $("#p_full_name").hide()
+          } else {
+            isNameValid = false;
+            $("#id_full_name").css('border-color', 'red');
+            $("#p_full_name").text("Invalid name").css("color", "red");
+          }
+        }
+      }
+    </script>
   </body>
+
 
 </html>

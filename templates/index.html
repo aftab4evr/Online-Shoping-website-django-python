@@ -154,6 +154,9 @@
                   <input type="checkbox" name="remember_me" id="remember_me" value="loginkeeping" />
                   <label for="loginkeeping">Keep me logged in</label>
                 </p>
+                {% if invalidEmail %}
+                <p style="color:red">{{invalidEmail}}</p>
+                {% endif %}
                 <p class="login button">
                   <input type="submit" value="Login"/>
                 </p>

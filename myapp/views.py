@@ -239,6 +239,8 @@ class Home(View):
 			data.price=pro.offer_price
 			data.save()
 			return redirect('myapp:home')
+
+@method_decorator(login_required,name='dispatch')		
 class AddToCart(View):
 	def get(self,request):
 		pid=request.GET['post_id']
@@ -262,6 +264,8 @@ class AddToCart(View):
 			data.price=pro.offer_price
 			data.save()
 			return redirect('myapp:home')
+
+@method_decorator(login_required,name='dispatch')		
 class CartView(View):
 	def get(self,request):
 		data=Cart.objects.filter(email=request.user)
@@ -284,6 +288,7 @@ class CartView(View):
 			Cart.objects.filter(email=username,book_id=button).delete()
 			return redirect("myapp:cart")
 
+@method_decorator(login_required,name='dispatch')		
 class AddressDetails(View):
 	def get(self,request):
 		return render(request,'addressDetails.html')
@@ -321,6 +326,7 @@ class Buy(View):
 		request.session['QTY']=request.POST.get('quantity')
 		return redirect("myapp:payment")
 
+@method_decorator(login_required,name='dispatch')		
 def addByID(request,pid):
 	username=request.user
 	pro=Products.objects.get(product_id=pid)
@@ -332,7 +338,6 @@ def addByID(request,pid):
 		quan.total=rs
 		quan.save()
 		return redirect('myapp:cart')
-
 	else:
 		data=Cart()
 		data.email=username
@@ -358,6 +363,8 @@ class Payment(View):
 		context = super().get_context_data(**kwargs)
 		context['key'] = settings.STRIPE_PUBLISHABLE_KEY
 		return context
+
+@method_decorator(login_required,name='dispatch')		
 def charge(request): # new
     if request.method == 'POST':
         charge = stripe.Charge.create(

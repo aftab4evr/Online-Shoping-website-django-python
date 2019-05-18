@@ -75,6 +75,7 @@ class UserRegistration(View):
 # 		latest.name.add(*hobby)
 # 		return HttpResponse(hobby)
 
+@method_decorator(login_required,name='dispatch')		
 class Map(View):
 	def get(self,request):
 		addr='Barabazar, Chandannagar, West Bengal 712136, India'
@@ -92,11 +93,13 @@ class Map(View):
 		return render(request,'map.html',{'marchentLat':geoData['lat'],'marchentLng':geoData['lng'],'userLNG':lng,'userLAT':lat,'distance':distance})
 	
 
+@method_decorator(login_required,name='dispatch')		
 class Order(View):
 	def get(self,request):
 		ord=Orders.objects.filter(email=request.user).order_by('-id','-id')
 		return render(request,'order.html',{'order':ord})
 
+@method_decorator(login_required,name='dispatch')		
 class GeneratePdf(View):
     def get(self, request, *args, **kwargs):
         data=Cart.objects.filter(email=request.user)
@@ -121,24 +124,30 @@ class GeneratePdf(View):
             return response
         return HttpResponse("Not found")
 
+@method_decorator(login_required,name='dispatch')		
 class Sucess(View):
 	def get(self,request):
 		request.session['PAID']=True;
 		Cart.objects.filter(email=request.user).delete()
 		return render(request,'sucess.html')
 
+@method_decorator(login_required,name='dispatch')		
 class PaypalDone(View):
 	def get(self,request):
 		return HttpResponse("PaypalDone")
+
+@method_decorator(login_required,name='dispatch')		
 class PaypalCancel(View):
 	def get(self,request):
 		return HttpResponse("PaypalCancel")
 
+@method_decorator(login_required,name='dispatch')		
 class PaypalReturn(View):
 	def get(self,request):
 		return HttpResponse("PaypalReturn")
 
-# @login_required
+
+@method_decorator(login_required,name='dispatch')		
 class Logout(View):
 	def get(self,request):
 		logout(request)
@@ -326,7 +335,6 @@ class Buy(View):
 		request.session['QTY']=request.POST.get('quantity')
 		return redirect("myapp:payment")
 
-@method_decorator(login_required,name='dispatch')		
 def addByID(request,pid):
 	username=request.user
 	pro=Products.objects.get(product_id=pid)
@@ -364,7 +372,6 @@ class Payment(View):
 		context['key'] = settings.STRIPE_PUBLISHABLE_KEY
 		return context
 
-@method_decorator(login_required,name='dispatch')		
 def charge(request): # new
     if request.method == 'POST':
         charge = stripe.Charge.create(

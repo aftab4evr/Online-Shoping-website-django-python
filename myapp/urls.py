@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^map',Map.as_view(),name='map'),
     url(r'^userregister',UserRegistration.as_view(),name='userregister'),
     # url(r'^multipalChoice',MultipalChoice.as_view(),name='multipalChoice'),
+    url(r'^test',Test.as_view(),name='test'),
     url(r'^addressDetails',AddressDetails.as_view(), name='addressDetails'),
     url(r'^(?P<pid>[0-9]+)/buy/$', views.addByID, name="buy"),
     url(r'charge/', views.charge, name='charge'),

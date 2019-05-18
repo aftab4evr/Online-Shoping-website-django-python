@@ -14,6 +14,7 @@ from .utils import render_to_pdf
 from myapp.forms import *
 import uuid 
 from django.utils import timezone
+from .decorators import check_recaptcha
 
 import datetime
 from paypal.standard.forms import PayPalPaymentsForm
@@ -50,6 +51,13 @@ def decreaseQuantity(request,id):
 	cart.save()
 	return redirect("myapp:cart")
 
+
+@method_decorator(check_recaptcha,name='dispatch')		
+class Test(View):
+	def get(self,request):
+		return render(request,'test.html')
+
+@method_decorator(check_recaptcha,name='dispatch')		
 class UserRegistration(View):
 	def post(self,request):
 		form = SingUpForm(request.POST or None)

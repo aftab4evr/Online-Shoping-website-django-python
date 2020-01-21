@@ -1,0 +1,165 @@
+{%load static%}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+    <head>
+        <title>Invoice</title>
+        <style type="text/css">
+            body {
+                font-weight: 200;
+                font-size: 14px;
+            }
+
+            .header {
+                font-size: 20px;
+                font-weight: 100;
+                text-align: center;
+                color: #007cae;
+            }
+
+            .title {
+                font-size: 22px;
+                font-weight: 100;
+                /* text-align: right;*/
+                padding: 10px 20px 0px 20px;
+            }
+
+            .title span {
+                color: #007cae;
+            }
+
+            .details {
+                padding: 1px 2px 0px 2px;
+                text-align: left !important;
+                /*margin-left: 40%;*/
+            }
+
+            .hrItem {
+                border: none;
+                height: 1px;
+                /* Set the hr color */
+                color: #333;
+                /* old IE */
+                background-color: #fff;
+                /* Modern Browsers */
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class='wrapper'>
+            <div class='header'>
+                <img src="{% static 'images/header.png' %}" width="200">
+                <p class='title'>Order Id: {{invoice_id}} </p>
+            </div>
+            <div>
+                <div class='details' style="font-size: 5">
+                    <table border="0">
+                        <tr>
+                            <td align="left" width="80">
+                                Name&nbsp;&nbsp;&nbsp;:
+                            </td>
+                            <td align="left" width="300">
+                                {{name}}
+                            </td>
+                            <td align="left" width="120">
+                                Company&nbsp;&nbsp;:
+                            </td>
+                            <td align="left" width="200">
+                                E-Kart
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left" width="80">
+                                Email&nbsp;&nbsp;&nbsp;&nbsp;:
+                            </td>
+                            <td align="left" width="300">
+                                {{email}}
+                            </td>
+                            <td align="left" width="120">
+                                Address&nbsp;&nbsp;:
+                            </td>
+                            <td align="left" width="200">
+                                New Delhi,110020
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left" width="80">
+                                Date&nbsp;&nbsp;&nbsp;&nbsp;:
+                            </td>
+                            <td align="left" width="300">
+                                {{today}}
+                            </td>
+                            <td align="left" width="120">
+                                Contact Us:
+                            </td>
+                            <td align="left" width="200">
+                                +91 9874563210
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left" width="80">
+                                Amount:
+                            </td>
+                            <td align="left" width="300">
+                                {{amount}}
+                            </td>
+                            <td align="left" width="120">
+                                Email&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:
+                            </td>
+                            <td align="left" width="200">
+                                e-kart@ekart.com
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <hr class='hrItem' />
+                <hr class='hrItem' />
+                <table width="90%" border="0">
+                    <tr>
+                        <td width="50" align="left">
+                            <h3>SL No</h3>
+                        </td>
+                        <td width="320" align="left">
+                            <h3>&nbsp;Name</h3>
+                        </td>
+                        <td width="105" align="center">
+                            <h3>Quantity</h3>
+                        </td>
+                        <td align="center" width="100">
+                            <h3>Price</h3>
+                        </td>
+                        <td align="center" width="100">
+                            <h3>Total</h3>
+                        </td>
+                    </tr>
+                </table>
+                {% for data in data %}
+                <table border="0" width="90%">
+                    <tr style="margin-top: 20px">
+                        <th width="50" valign="upper"><label class="idbox">{{forloop.counter}}</label></th>
+                        <th width="300" align="left">{{data.prd_name}}</th>
+                        <th width="80"><label class="box">{{data.quantity}}</label> </th>
+                        <th width="80"><label class="box">{{data.price}}</label></th>
+                        <th width="80"> <label class="box">{{ data.total }}</label></th>
+                    </tr>
+                </table>
+                {% endfor %}
+                <br>
+                <hr>
+                <table border="0">
+                    <tr>
+                        <td align="right" width="67%"></td>
+                        <td align="right" width="20%"><label class="totalbox" style="font-size: 4">Total: {{rs}}</label>
+                        </td>
+                    </tr>
+                </table>
+                <hr>
+                <hr>
+                <center>
+                    <p>Notes:This is Computer Generated Invoice</p>
+                </center>
+            </div>
+        </div>
+    </body>
+</html>

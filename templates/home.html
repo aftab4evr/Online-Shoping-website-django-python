@@ -1,0 +1,588 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<title>Home Page!!</title>
+		<link rel="icon" type="image/ico" href="{%static 'images/logo.png'%}" />
+
+	</head>
+	<style>
+		.zoom {
+			transition: transform .2s;
+			width: 100%;
+			height: 100%;
+			margin: 0 auto;
+		}
+
+		.zoom:hover {
+			-ms-transform: scale(1.5);
+			-webkit-transform: scale(1.5);
+			transform: scale(1.5);
+		}
+
+		.card {
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+			transition: 0.3s;
+			width: 100%;
+			border-radius: 5px;
+			padding-bottom: 10px;
+		}
+
+		.card:hover {
+			box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+		}
+
+		img {
+			border-radius: 5px 5px 0 0;
+			padding-left: 10px;
+		}
+
+		label {
+			padding-left: 20px;
+			padding-bottom: 15px;
+			font-size: 25px;
+		}
+
+
+		.dot {
+			padding-left: 250px;
+		}
+
+		.scrollit {
+			overflow: scroll;
+			height: 700px;
+		}
+
+		.circle {
+			border-radius: 100%;
+			border: 2px solid #ff675b;
+			padding-left: 5px;
+		}
+
+		input[type=text],
+		select {
+			width: 100%;
+			padding: 12px 20px;
+			margin: 8px 0;
+			display: inline-block;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			box-sizing: border-box;
+		}
+
+		.button {
+			background-color: #4CAF50;
+			border: none;
+			color: white;
+			padding: 15px 12px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			margin: 4px 2px;
+			cursor: pointer;
+		}
+
+		.btn {
+			background-color: #A10909;
+			border: none;
+			color: white;
+			padding: 5px 15px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			margin: 4px 2px;
+			cursor: pointer;
+		}
+
+		.btnbuy {
+			background-color: #A10909;
+			border: none;
+			color: white;
+			padding: 15px 35px;
+			text-align: center;
+			text-decoration: none;
+			display: inline-block;
+			font-size: 16px;
+			margin: 4px 2px;
+			cursor: pointer;
+		}
+
+		.select-style {
+			border: 1px solid #ccc;
+			width: 120px;
+			border-radius: 3px;
+			overflow: hidden;
+			background: #fafafa url("img/icon-select.png") no-repeat 90% 50%;
+		}
+
+		.select-style select {
+			padding: 5px 8px;
+			width: 150%;
+			border: none;
+			text-align: center;
+			box-shadow: none;
+			background: transparent;
+			background-image: none;
+			-webkit-appearance: none;
+		}
+
+		.select-style select:focus {
+			outline: none;
+		}
+
+
+		#snackbar {
+			visibility: hidden;
+			min-width: 250px;
+			margin-left: -125px;
+			background-color: #333;
+			color: #fff;
+			text-align: center;
+			border-radius: 2px;
+			padding: 16px;
+			position: fixed;
+			z-index: 1;
+			left: 50%;
+			bottom: 30px;
+			font-size: 17px;
+		}
+
+		#snackbar.show {
+			visibility: visible;
+			-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+			animation: fadein 0.5s, fadeout 0.5s 2.5s;
+		}
+
+		@-webkit-keyframes fadein {
+			from {
+				bottom: 0;
+				opacity: 0;
+			}
+
+			to {
+				bottom: 30px;
+				opacity: 1;
+			}
+		}
+
+		@keyframes fadein {
+			from {
+				bottom: 0;
+				opacity: 0;
+			}
+
+			to {
+				bottom: 30px;
+				opacity: 1;
+			}
+		}
+
+		@-webkit-keyframes fadeout {
+			from {
+				bottom: 30px;
+				opacity: 1;
+			}
+
+			to {
+				bottom: 0;
+				opacity: 0;
+			}
+		}
+
+		@keyframes fadeout {
+			from {
+				bottom: 30px;
+				opacity: 1;
+			}
+
+			to {
+				bottom: 0;
+				opacity: 0;
+			}
+		}
+
+		.search {
+			width: 30%;
+			padding: 10px;
+			background: #ccc;
+			color: white;
+			font-size: 17px;
+			border: 1px solid grey;
+			border-left: none;
+			cursor: pointer;
+		}
+
+
+		.autocomplete {
+			position: relative;
+			display: inline-block;
+		}
+
+		input {
+			border: 1px solid transparent;
+			background-color: #f1f1f1;
+			padding: 10px;
+			font-size: 16px;
+		}
+
+
+		.autocomplete-items {
+			position: absolute;
+			border: 1px solid #d4d4d4;
+			border-bottom: none;
+			border-top: none;
+			z-index: 99;
+			/*position the autocomplete items to be the same width as the container:*/
+			top: 100%;
+			left: 0;
+			right: 0;
+		}
+
+		.autocomplete-items div {
+			padding: 10px;
+			cursor: pointer;
+			background-color: #fff;
+			border-bottom: 1px solid #d4d4d4;
+		}
+
+		/*when hovering an item:*/
+		.autocomplete-items div:hover {
+			background-color: #e9e9e9;
+		}
+
+		/*when navigating through the items using the arrow keys:*/
+		.autocomplete-active {
+			background-color: DodgerBlue !important;
+			color: #ffffff;
+		}
+	</style>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<body onload="onLoad()">
+		<!-- <form name="home" autocomplete="off" action="#"> -->
+		{%csrf_token %}
+		<center>
+			<table>
+				<tr>
+					<td width="500">
+						<div class="card">
+							<table border="0" align="center">
+								<tr>
+									<th width="100"><a href="{%url 'myapp:home' %}"> <img
+												src="{% static 'images/home.png'%}" width="45" height="40"></a></th>
+									<th width="250"><a href="{%url 'myapp:home' %}"><img
+												src="{% static 'images/header.png' %}" width="200"></a></th>
+									<th width="50"> <a href="{%url 'myapp:cart'%}"><img class="tv"
+												src="{% static 'images/kart.jpg'%}" width="40" height="40"></a></th>
+									<th width="50"> <a href="{%url 'myapp:profile'%}"><img class="tv"
+												src="{% static 'images/profile.png'%}" width="40" height="40"></a>
+									</th>
+									<th width="100"> <a href="{%url 'myapp:order' %}"><img
+												src="{% static 'images/order.png'%}" width="40" height="40"></a>
+									</th>
+									<th width="100"> <a href="{%url 'myapp:logout' %}"><img
+												src="{% static 'images/logout.png'%}" width="40" height="40"></a>
+									</th>
+								</tr>
+							</table>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</center>
+		<center>
+			<table>
+				<tr>
+					<td width="500">
+						<div class="card">
+							<table border="0" align="center">
+								<tr>
+									<td>
+										<label> Filter</label>
+										<select class="select-style" id="choice" onchange="myChoice()">
+											<option>--Select--</option>
+											{% for data in choice %}
+											<option value="{{data.name}}">{{data.name}}</option>
+											{% endfor %}
+										</select>
+									</td>
+									<td>
+										<label>sort</label>
+										<select class="select-style" id="id_sort" onchange="sort()">
+											<option value="0">--Select--</option>
+											<option value="1">Popularity</option>
+											<option value="2">Price -- Low to High</option>
+											<option value="3">Price -- High to Low</option>
+											<option value="4">Newest First</option>
+										</select>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2" align="center">
+										<div class="autocomplete" style="width:200px;">
+											<input id="myInput" type="text" name="item" autocomplete="off"
+												placeholder="Search......">
+										</div>
+										<button type="button" id="id_button" class="search" onclick="serchData()">
+											<i class="fa fa-search"></i>
+										</button>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</center>
+		<div class="scrollit">
+			<table border="0" align="center">
+				<center>
+					{% if prod %}
+					{% for data in prod %}
+					<tr style="margin: 20px">
+						<td width="500">
+							<div class="card">
+								<div style="margin: 10px; font-size: 1.5pc;text-align: left">
+									<u>{{data.name}}</u>
+								</div>
+								<div class="container">
+									<center>
+										<div class="zoom">
+											<img src="{{ data.img.url }}" id="myImg" width="300" height="400">
+										</div>
+									</center>
+								</div>
+								<hr noshade>
+
+								<div style="margin: 10px" align="center">
+									<table border="0" width="350">
+										<tr>
+											<td width="100" width="50">
+												<div style="font-size:120%;"><strike>RS: {{data.price}}</strike>
+												</div>
+											</td>
+											<td width="100">
+												<div style="font-size:120%;"><b>Offer Price:
+														{{data.offer_price}}</b></div>
+											</td>
+										</tr>
+										<tr>
+											<td width="50">
+												<input type="hidden" name="product_id" value="{{data.product_id}}">
+												<button id="test" class="classTest button" type="submit"
+													value="{{data.product_id}}"
+													onclick="addToCart('{{data.product_id}}')"> Add
+													to Cart</button>
+											</td>
+											<td>
+												<a href="/{{data.product_id}}/buy/" class="btnbuy">Buy</a>
+											</td>
+										</tr>
+										
+									</table>
+									<div style="margin: 10px">
+										{{data.discription}}
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+
+					{%endfor%}
+			</table>
+			</center>
+			{% else %}
+			<table align="center">
+				<tr>
+					<td width="500" align="center">
+						<div class="card">
+							<h1 style="color: red">No Item Found</h1>
+						</div>
+					</td>
+				</tr>
+			</table>
+			{% endif%}
+		</div>
+		<!-- <div class="card">
+				<center>
+					<table width="100" border="0" align="center">
+						<tr>
+							<td width="10">
+								{% if prod.has_previous %}
+								<a href="?page=1">
+								</a>
+								<a href="?page={{prod.previous_page_number}}">
+									<div style="font-size: 25px;">
+										< </div> </a> </td> <td align="center" width="90">
+											{% endif %}
+											{% for num in prod.paginator.page_range %}
+											{% if prod.number == num %}
+											<strong>
+												<div style="font-size: 25px;">{{num}}</div>
+											</strong>
+											{% elif num > prod.number|add:'-3' and num < prod.number|add:'3' %}
+											{{num}}
+											{%endif%}
+											{%endfor%}
+											{% if prod.has_next%}
+							</td>
+							<td width="10"> </a>
+								<a class="pagination-action" href="?page={{prod.next_page_number}}">
+									<div style="font-size: 25px;">
+										>
+									</div>
+								</a>
+								{%endif%}
+							</td>
+						</tr>
+					</table>
+				</center>
+			</div> -->
+		<div id="snackbar">item Added to cart</div>
+		<!-- </form> -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+		<script type="text/javascript">
+			function addToCart(id) {
+				$.ajax(
+					{
+						type: "GET",
+						url: "/addtocart",
+						data: {
+							post_id: id
+						},
+						success: function (data) {
+							var x = document.getElementById("snackbar");
+							x.className = "show";
+							setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+						}
+					})
+			}
+
+		</script>
+		<script>
+			function serchData() {
+				let item = document.getElementById("myInput").value;
+				if (item) {
+					var result = item.replace(/\s/gi, "_");
+					result = result.replace(/-/g, ' ');
+					document.getElementById("id_button").disabled = true;
+					let basUlr = "http://127.0.0.1:8000/"
+					let endPoint = "/filterByChoice"
+					setTimeout(function () { window.open(basUlr + result + endPoint, "_self"); });
+				}
+			}
+			function myFunction() {
+				setTimeout(document.home.submit(), 6000);
+				var x = document.getElementById("snackbar");
+				x.className = "show";
+				setTimeout(function () { x.className = x.className.replace("show", ""); }, 5000);
+			}
+
+			function sort() {
+				let basUlr = "http://127.0.0.1:8000/"
+				let endPoint = "sortitem/"
+				choice = document.getElementById("id_sort").value;
+				if (choice != 0) {
+					setTimeout(function () { window.open(basUlr + endPoint + choice, "_self"); });
+				}
+			}
+
+			function myChoice() {
+				let basUlr = "http://127.0.0.1:8000/"
+				let endPoint = "/filterByChoice"
+				choice = document.getElementById("choice").value;
+				setTimeout(function () { window.open(basUlr + choice + endPoint, "_self"); });
+			}
+		</script>
+	</body>
+	<script>
+		function autocomplete(inp, arr) {
+			var currentFocus;
+			inp.addEventListener("input", function (e) {
+				var a, b, i, val = this.value;
+				closeAllLists();
+				if (!val) { return false; }
+				currentFocus = -1;
+				a = document.createElement("DIV");
+				a.setAttribute("id", this.id + "autocomplete-list");
+				a.setAttribute("class", "autocomplete-items");
+				this.parentNode.appendChild(a);
+				for (i = 0; i < arr.length; i++) {
+					if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+						b = document.createElement("DIV");
+						b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+						b.innerHTML += arr[i].substr(val.length);
+						b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+						b.addEventListener("click", function (e) {
+							inp.value = this.getElementsByTagName("input")[0].value;
+							closeAllLists();
+						});
+						a.appendChild(b);
+					}
+				}
+			});
+			inp.addEventListener("keydown", function (e) {
+				var x = document.getElementById(this.id + "autocomplete-list");
+				if (x) x = x.getElementsByTagName("div");
+				if (e.keyCode == 40) {
+					currentFocus++;
+					addActive(x);
+				} else if (e.keyCode == 38) { //up
+					currentFocus--;
+					addActive(x);
+				} else if (e.keyCode == 13) {
+					e.preventDefault();
+					if (currentFocus > -1) {
+						if (x) x[currentFocus].click();
+					}
+				}
+			});
+			function addActive(x) {
+				if (!x) return false;
+				removeActive(x);
+				if (currentFocus >= x.length) currentFocus = 0;
+				if (currentFocus < 0) currentFocus = (x.length - 1);
+				x[currentFocus].classList.add("autocomplete-active");
+			}
+			function removeActive(x) {
+				for (var i = 0; i < x.length; i++) {
+					x[i].classList.remove("autocomplete-active");
+				}
+			}
+			function closeAllLists(elmnt) {
+				var x = document.getElementsByClassName("autocomplete-items");
+				for (var i = 0; i < x.length; i++) {
+					if (elmnt != x[i] && elmnt != inp) {
+						x[i].parentNode.removeChild(x[i]);
+					}
+				}
+			}
+			document.addEventListener("click", function (e) {
+				closeAllLists(e.target);
+			});
+		}
+		var countries = []
+		var i = 0;
+	</script>
+	{% for data in choice %}
+	<script>
+		countries[i] = "{{data}}"
+		i += 1
+	</script>
+	{% endfor %}
+
+	{% for data in name %}
+	<script>
+		countries[i] = "{{data}}"
+		i += 1
+	</script>
+	{% endfor %}
+	<script>
+		/*initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values:*/
+		autocomplete(document.getElementById("myInput"), countries);
+	</script>
+
+</html>

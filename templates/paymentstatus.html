@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>status</title>
+</head>
+
+<body>
+    <div class="container">
+        {{response}}
+        <div class="col my-4">
+
+            <h2>Payment status regarding your order Id {{response.ORDERID}}</h2>
+            {% if response.RESPCODE == '01' %}
+            ORDER SUCCESS
+            {% else %}
+            ORDER FAILURE
+            {% endif%}
+
+        </div>
+</body>
+
+</html>

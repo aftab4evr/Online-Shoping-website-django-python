@@ -1,0 +1,252 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>cart!!! </title>
+    <link rel="icon" type="image/ico" href="{%static 'images/logo.png'%}" />
+
+  </head>
+  <style>
+    .card1 {
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      transition: 0.3s;
+      width: 90%;
+      border-radius: 5px;
+      padding-bottom: 10px;
+    }
+
+    .card1:hover {
+      box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .card {
+      box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+      transition: 0.3s;
+      width: 60%;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .button {
+      background-color: #4CAF50;
+      /* Green */
+      border: none;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+
+    .button3 {
+      border-radius: 15px;
+    }
+
+    .btn {
+      background-color: #A10909;
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+
+    .box {
+      width: 100px;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .totalbox {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    .idbox {
+      width: 50px;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    input[type=text],
+    select {
+      width: 50%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    label {
+      padding-left: 20px;
+      padding-bottom: 15px;
+      font-size: 25px;
+    }
+
+    .btnbuy {
+      background-color: #A10909;
+      border: none;
+      color: white;
+      padding: 15px 35px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+    }
+  </style>
+
+  <body onload="getLocation()">
+    <form name="home" action="{% url 'myapp:cart' %}" method="POST">
+      <center>
+        {%csrf_token %}
+        <center>
+          <table>
+            <tr>
+              <td width="500">
+                <div class="card1">
+                  <table border="0" align="center">
+                    <tr>
+                      <th width="100"><a href="{%url 'myapp:home' %}"> <img src="{% static 'images/home.png'%}"
+                            width="45" height="40"></a></th>
+                      <th width="250"><a href="{%url 'myapp:home' %}" ><img src="{% static 'images/header.png' %}" width="200"></a></th>
+                      <th width="50"> <a href="{%url 'myapp:cart'%}"><img class="tv" src="{% static 'images/kart.jpg'%}"
+                            width="40" height="40"></a></th>
+                      <th width="50"> <a href="{%url 'myapp:profile'%}"><img class="tv"
+                            src="{% static 'images/profile.png'%}" width="40" height="40"></a></th>
+                      <th width="100"> <a href="{%url 'myapp:order' %}"><img src="{% static 'images/order.png'%}"
+                            width="40" height="40"></a></th>
+                      <th width="100"> <a href="{%url 'myapp:logout' %}"><img src="{% static 'images/logout.png'%}"
+                            width="40" height="40"></a></th>
+                    </tr>
+                  </table>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </center>
+        <div class="card">
+          {% if data %}
+          <table width="90%" border="0">
+            <tr>
+              <td width="50" align="center">
+                <h3>SL No</h3>
+              </td>
+              <td width="140" align="center">
+                <h3>Image</h3>
+              </td>
+              <td width="190" align="center">
+                <h3>Name</h3>
+              </td>
+              <td width="105" align="center">
+                <h3>Quantity</h3>
+              </td>
+              <td align="center" width="150">
+                <h3>Price</h3>
+              </td>
+              <td align="center" width="100">
+                <h3>Total</h3>
+              </td>
+              <td align="center">
+                <h3></h3>
+              </td>
+            </tr>
+          </table>
+          {% for data in data %}
+          <table border="0" width="90%">
+            <tr style="margin-top: 20px">
+              <th width="10"><label class="idbox">{{forloop.counter}}</label></th>
+              <th width="150"><img src="{{ data.img }}" height="50" width="50"></th>
+              <th width="200">{{data.prd_name}}</th>
+              <input type="hidden" id="quantity" value="{{data.quantity}}">
+              <th width="50" align="right">
+                <a id="increase" onclick="increaseQuantity('{{data.id}}')">
+                  <img src="{%static 'images/download.png'%}" width="50" height="50"></a>
+              </th>
+              <th width="80"><label class="box">{{data.quantity}}</label> </th>
+              <th width="50" align="left">
+                <a id="decrease" onclick="decreaseQuantity('{{data.id}}','{{data.quantity}}')"><img
+                    src="{%static 'images/minues.png'%}" width="50" height="50"></a>
+              </th>
+              <th width="80"><label class="box">{{data.price}}</label></th>
+              <th width="80"> <label class="totalbox">{{ data.total }}</label></th>
+              <th width="50"><button class="btnbuy" name="button" value="{{data.book_id}}">Remove</button></th>
+            </tr> 
+          </table>
+          <hr>
+          {% endfor %}
+          <hr noshade>
+          <table border="0">
+            <tr>
+              <input type="hidden" name="lat" id="lat_id">
+              <input type="hidden" name="lng" id="lng_id">
+              <td align="right" width="80%"><button class="button button3" name="button"
+                  value="Checkout">Checkout</button></td>
+              <td align="right" width="20%"><label class="totalbox">Total: {{rs}}</label></td>
+            </tr>
+          </table>
+          {%else%}
+          <br><br><br>
+          <div style="font-size: 25px">There is no Item In Cart!!</div>
+          <br><br><br>
+          {%endif%}
+        </div>
+      </center>
+    </form>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+      function increaseQuantity(id) {
+        let endPoint = "/increasequantity/"
+        window.open(endPoint + id, "_self");
+      }
+
+      function decreaseQuantity(id, qty) {
+        let iNum = parseInt(qty);
+        if (iNum > 1) {
+          let endPoint = "/decreasequantity/"
+          window.open(endPoint + id, "_self");
+        }
+      }
+
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+        } else {
+          alert("Geolocation is not supported by this browser.");
+        }
+      }
+
+      function showPosition(position) {
+        $("#lat_id").val(position.coords.latitude)
+        $("#lng_id").val(position.coords.longitude)
+      }
+    </script>
+  </body>
+
+</html>

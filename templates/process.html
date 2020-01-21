@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<head>
+  <!-- Add meta tags for mobile and IE -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+</head>
+<style>
+  .card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+    width: 40%;
+  }
+
+  .card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+  }
+</style>
+
+<body>
+  <center>
+    <form action="{% url 'myapp:charge' %}" method="post">
+      {%csrf_token %}
+      <div class="card"><br><br><br>
+        <!-- Set up a container element for the button -->
+        <h3>{{rs}} to be Paid</h3>
+        <h3>Pay With Paytm</h3>
+        <a href="{% url 'myapp:paytm' %}">Paytm</a>
+
+        <h4>Pay With PayPal</h4>
+        <div id="paypal-button"></div><br><br><br>
+        <hr>
+        <h4>OR</h4>
+
+        <h4>Pay With Stripe</h4>
+
+        <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+          data-key="pk_test_iRuB8ytUrcmckHzBKk7W7Xly00EELrr5ME" data-description="E Kart Payment Page"
+          data-amount={{rs}} data-locale="auto" data-city="Delhi"><br><br><br>
+   </div>
+
+
+
+
+          </script>
+    </form>
+  </center>
+  <!-- <script src="https://www.paypal.com/sdk/js?client-id=AQTRqMLznvsV3_0h26BxKHsqtxkVYCW4p-0WPKlNxE4Dti8lsmLRcefv91oFJckrBf_GP3GuKa7sBWW_&currency=USD"></script> -->
+
+  <script src="https://www.paypalobjects.com/api/checkout.js"></script>
+
+  <script>
+
+
+
+                                                                    paypal.Button.render({
+                                                                      // Configure environment
+                                                                      env: 'sandbox',
+    client: {
+                                                                      sandbox: 'AU1_GqIbOXsHdGoGZlZo2BY2MiY4s8fdcv9y549LlJmfXkusCrco5xaNSTfa4Lb2AoUnTCkvQcqQI_U-',
+                                                                    // production: 'AY-hOAnxCDPYcJzUN15foAifYFNVgiyi600ajPa3kARD8wOFWwa6PXb-wbNj5E2HEdMGIlwVnFeRTsvk'
+                                                                  },
+                                                                  // Customize button (optional)
+                                                                  locale: 'en_US',
+    style: {
+                                                                      size: 'small',
+                                                                    color: 'gold',
+                                                                    shape: 'pill',
+                                                                  },
+                                                              
+                                                                  // Enable Pay Now checkout flow (optional)
+                                                                  commit: true,
+                                                              
+                                                                  // Set up a payment
+    payment: function(data, actions) {
+      return actions.payment.create({
+                                                                      transactions: [{
+                                                                      amount: {
+                                                                      total: {{ rs }},
+                                                                    currency: 'INR'
+                                                                  }
+                                                                }]
+                                                              });
+                                                            },
+                                                            // Execute the payment
+    onAuthorize: function(data, actions) {
+      return actions.payment.execute().then(function() {
+                                                                      // Show a confirmation message to the buyer
+                                                                      window.location = "/sucess"
+                                                                    });
+                                                                  }
+                                                                }, '#paypal-button');
+                                                              
+                                                                </script>
+</body>
